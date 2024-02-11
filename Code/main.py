@@ -1,4 +1,6 @@
 import customtkinter
+import threading
+import keyboard
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -22,6 +24,12 @@ class App(customtkinter.CTk):
         self.idNum = customtkinter.CTkLabel(master=self.frame, text="**********")
         self.idNum.pack(pady=20)
 
+        
+
+    def checkInput(self):
+        if(len(self.barcodeEntry.get()) >= 18):
+            self.parseBarcode()
+            self.barcodeEntry.delete(0, "end")
 
     def parseBarcode(self):
             base32Barcode = self.barcodeEntry.get()
@@ -31,6 +39,14 @@ class App(customtkinter.CTk):
 
 
 app = App()
-app.checkBarcode()
-app.mainloop()
+
+
+while True:
+    app.checkInput()
+    app.update_idletasks()
+    app.update()
+
+
+
+
 
