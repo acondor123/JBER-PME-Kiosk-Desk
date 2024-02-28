@@ -39,7 +39,9 @@ class App(customtkinter.CTk):
             self.findStudent(parsedBarcode)
 
     def findStudent(self, dod_id):
-        data = pd.read_excel(io='E:\\Repos\\JBER-PME-Kiosk-Desk\\Code\\mockSpreadsheet.xlsx', usecols=['DOD ID', 'First Name', 'Last Name', 'Flight', 'Room Number', 'Instructor Name'])
+        #data = pd.read_excel(io='E:\\Repos\\JBER-PME-Kiosk-Desk\\Code\\mockSpreadsheet.xlsx', usecols=['DOD ID', 'First Name', 'Last Name', 'Flight', 'Room Number', 'Instructor Name'])
+
+        data = pd.read_excel(io='mockSpreadsheet.xlsx', usecols=['DOD ID', 'First Name', 'Last Name', 'Flight', 'Room Number', 'Instructor Name'])
 
         students = data.groupby("DOD ID").agg(list).to_dict('index')
 
