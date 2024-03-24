@@ -58,7 +58,7 @@ def generate_qr_code(data):
     # Create a BytesIO object to hold the QR code image
     qr_img = BytesIO()
     img = qr.make_image(fill_color='black', back_color='white')
-    img.save(qr_img, format='PNG')
+    img.save(qr_img)
     # Encode the image as base64 string
     qr_img_base64 = base64.b64encode(qr_img.getvalue()).decode()
     return qr_img_base64
