@@ -64,4 +64,4 @@ def generate_qr_code(data):
     return qr_img_base64
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run()
