@@ -27,7 +27,7 @@
         .input-group {
             margin-bottom: 20px;
         }
-        
+
         .input-group-text {
             width: 140px;
             text-align: left;
@@ -55,13 +55,25 @@
             line-height: 1.5;
             border-radius: .25rem;
             border: 1px solid #ced4da;
-            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
             width: 100%;
         }
 
         @media (max-width: 767px) {
             .container {
                 padding: 20px;
+            }
+
+            img {
+                width: 40%;
+                height: 40%;
+                margin: 0 auto;
+                display: block;
+            }
+
+            .input-group-text {
+                width: 120px;
+                text-align: left;
             }
         }
     </style>
@@ -111,7 +123,7 @@
             <img src="static/pme_logo.jpg" alt="pme_logo">
         </form>
     </div>
-    
+
 </body>
 
 </html>
