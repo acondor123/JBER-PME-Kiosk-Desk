@@ -5,72 +5,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entry Box</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: left;
-            flex-direction: column;
+            padding: 20px;
         }
 
-
-        input[type="text"] {
-            width: 200px;
-            margin-bottom: 10px;
+        .form-group {
+            margin-bottom: 20px;
         }
 
-
-        select {
-            width: 200px;
-            margin-bottom: 10px;
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group-text {
+            width: 140px;
+            text-align: left;
         }
 
         img {
-            width: 33%;
+            max-width: 100%;
             height: auto;
+            margin: 0 auto;
+            display: block;
         }
 
-        @media only screen and (max-width: 600px) {
-            img {
-                width: 80%;
-                /* Adjusted width for mobile */
-            }
+        /* Style for select element */
+        select.form-select {
+            padding: .375rem 1.75rem .375rem .75rem;
+            line-height: 1.5;
+            border-radius: .25rem;
+            border: 1px solid #ced4da;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            width: 100%;
         }
     </style>
 </head>
 
 <body>
-    <form action="/submit" method="post">
-        <label for="firstName">First Name:</label><br>
-        <input type="text" id="firstName" name="firstName"><br>
-
-        <label for="lastName">Last Name:</label><br>
-        <input type="text" id="lastName" name="lastName"><br>
-
-        <label for="rank">Rank:</label><br>
-        <select id="rank" name="rank">
-            <option value=""></option>>
-            <option value="Amn">Amn</option>
-            <option value="A1C">A1C</option>
-            <option value="SrA">SrA</option>
-            <option value="SSgt">SSgt</option>
-            <option value="TSgt">TSgt</option>
-            <option value="MSgt">MSgt</option>
-            <option value="SMSgt">SMSgt</option>
-            <option value="CMSgt">CMSgt</option>
-        </select><br>
-
-        <label for="unit">Unit:</label><br>
-        <input type="text" id="unit" name="unit"><br>
-
-        <label for="phoneNumber">Phone Number:</label><br>
-        <input type="text" id="phoneNumber" name="phoneNumber"><br>
-
-        <input type="submit" value="Submit">
-
-
-    </form>
+    <div class="container">
+        <h1 class="mb-4">Entry Form</h1>
+        <form action="/submit" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text" id="addon-wrapping">First Name</span>
+                        <input type="text" class="form-control" id="firstName" name="firstName">
+                    </div>
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text" id="addon-wrapping">Last Name</span>
+                        <input type="text" class="form-control" id="lastName" name="lastName">
+                    </div>
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text" id="addon-wrapping">Rank</span>
+                        <select class="form-select" id="rank" name="rank">
+                            <option value=""></option>
+                            <option value="Amn">Amn</option>
+                            <option value="A1C">A1C</option>
+                            <option value="SrA">SrA</option>
+                            <option value="SSgt">SSgt</option>
+                            <option value="TSgt">TSgt</option>
+                            <option value="MSgt">MSgt</option>
+                            <option value="SMSgt">SMSgt</option>
+                            <option value="CMSgt">CMSgt</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text" id="addon-wrapping">Unit</span>
+                        <input type="text" class="form-control" id="unit" name="unit">
+                    </div>
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text" id="addon-wrapping">Phone Number</span>
+                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
     <img src="static/pme_logo.jpg" alt="pme_logo">
 </body>
 
