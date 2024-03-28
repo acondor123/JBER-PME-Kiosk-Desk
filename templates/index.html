@@ -19,7 +19,6 @@
             min-height: 100vh;
         }
 
-
         .form-group {
             margin-bottom: 20px;
         }
@@ -29,7 +28,7 @@
         }
 
         .input-group-text {
-            width: 140px;
+            min-width: 140px;
             text-align: left;
         }
 
@@ -59,6 +58,31 @@
             width: 100%;
         }
 
+        .btn-radio {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #ced4da;
+        }
+
+        .btn-radio:checked {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+        .btn-check:checked+.btn-radio {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        p.error-message {
+            color: red;
+        }
+
+        p.no-error {
+            color: white;
+        }
+
         @media (max-width: 767px) {
             .container {
                 padding: 20px;
@@ -81,49 +105,102 @@
 
 <body>
     <div class="container">
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% else %}
+        <p class="no-error">No Error</p>
+        {% endif %}
         <h1 class="mb-4">Enter Your Information:</h1>
         <form action="/submit" method="post">
             <div class="row">
                 <div class="col-md-6">
                     <div class="input-group flex-nowrap">
                         <span class="input-group-text" id="addon-wrapping">First Name</span>
-                        <input type="text" class="form-control" id="firstName" name="firstName">
+                        <input type="text" class="form-control" id="firstName" name="firstName"
+                            value="{{ request.form.get('firstName', '') }}">
                     </div>
                     <div class="input-group flex-nowrap">
                         <span class="input-group-text" id="addon-wrapping">Last Name</span>
-                        <input type="text" class="form-control" id="lastName" name="lastName">
+                        <input type="text" class="form-control" id="lastName" name="lastName"
+                            value="{{ request.form.get('lastName', '') }}">
                     </div>
                     <div class="input-group flex-nowrap">
                         <span class="input-group-text" id="addon-wrapping">Rank</span>
                         <select class="form-select" id="rank" name="rank">
-                            <option value=""></option>
-                            <option value="Amn">Amn</option>
-                            <option value="A1C">A1C</option>
-                            <option value="SrA">SrA</option>
-                            <option value="SSgt">SSgt</option>
-                            <option value="TSgt">TSgt</option>
-                            <option value="MSgt">MSgt</option>
-                            <option value="SMSgt">SMSgt</option>
-                            <option value="CMSgt">CMSgt</option>
+                            <option value="" {% if request.form.get('rank', '' )=='' %}selected{% endif %}></option>
+                            <option value="Amn" {% if request.form.get('rank', '' )=='Amn' %}selected{% endif %}>Amn
+                            </option>
+                            <option value="A1C" {% if request.form.get('rank', '' )=='A1C' %}selected{% endif %}>A1C
+                            </option>
+                            <option value="SrA" {% if request.form.get('rank', '' )=='SrA' %}selected{% endif %}>SrA
+                            </option>
+                            <option value="SSgt" {% if request.form.get('rank', '' )=='SSgt' %}selected{% endif %}>SSgt
+                            </option>
+                            <option value="TSgt" {% if request.form.get('rank', '' )=='TSgt' %}selected{% endif %}>TSgt
+                            </option>
+                            <option value="MSgt" {% if request.form.get('rank', '' )=='MSgt' %}selected{% endif %}>MSgt
+                            </option>
+                            <option value="SMSgt" {% if request.form.get('rank', '' )=='SMSgt' %}selected{% endif %}>
+                                SMSgt</option>
+                            <option value="CMSgt" {% if request.form.get('rank', '' )=='CMSgt' %}selected{% endif %}>
+                                CMSgt</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="input-group flex-nowrap">
                         <span class="input-group-text" id="addon-wrapping">Unit</span>
-                        <input type="text" class="form-control" id="unit" name="unit">
+                        <input type="text" class="form-control" id="unit" name="unit"
+                            value="{{ request.form.get('unit', '') }}">
                     </div>
                     <div class="input-group flex-nowrap">
                         <span class="input-group-text" id="addon-wrapping">Phone Number</span>
-                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber">
+                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
+                            value="{{ request.form.get('phoneNumber', '') }}">
                     </div>
+
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group" role="group" id="fitness">
+                                <span class="input-group-text">Current On Fitness?</span>
+                                <input type="radio" class="btn-check" name="fitness" id="fitnessYes" value="yes" {% if
+                                    request.form.get('fitness')=='yes' %}checked{% endif %}>
+                                <label class="btn btn-radio" for="fitnessYes">Yes</label>
+                                <input type="radio" class="btn-check" name="fitness" id="fitnessNo" value="no" {% if
+                                    request.form.get('fitness')=='no' %}checked{% endif %}>
+                                <label class="btn btn-radio" for="fitnessNo">No</label>
+                                <!-- Hidden input with default value -->
+                                <input type="hidden" name="fitness" value="none">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group" role="group" id="profile">
+                                <span class="input-group-text">Are You On A Profile?</span>
+                                <input type="radio" class="btn-check" name="profile" id="profileYes" value="yes" {% if
+                                    request.form.get('profile')=='yes' %}checked{% endif %}>
+                                <label class="btn btn-radio" for="profileYes">Yes</label>
+                                <input type="radio" class="btn-check" name="profile" id="profileNo" value="no" {% if
+                                    request.form.get('profile')=='no' %}checked{% endif %}>
+                                <label class="btn btn-radio" for="profileNo">No</label>
+                                <!-- Hidden input with default value -->
+                                <input type="hidden" name="profile" value="none">
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
             <img src="static/pme_logo.jpg" alt="pme_logo">
         </form>
     </div>
-
 </body>
 
 </html>

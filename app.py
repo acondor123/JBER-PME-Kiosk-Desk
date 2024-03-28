@@ -6,6 +6,27 @@ import re
 
 app = Flask(__name__)
 
+
+def validateName(name):
+    if(len(name) >= 64):
+        return False
+    return bool(re.match(r'^[a-zA-Z-]+$', name.strip()))
+
+def validateRank(rank):
+    if (rank != ''):
+        return True
+    return False
+
+def validateUnit(unit):
+    if(len(unit) >= 2 and len(unit) <= 5):
+        return True
+    return False
+
+def validatePhoneNumber(phoneNumber):
+    if(len(phoneNumber) != 10):
+        return False
+    return True
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -15,32 +36,49 @@ def submit():
     if request.method == 'POST':
 
 
-        firstName = request.form['firstName'].lower()
-        lastName = request.form['lastName'].lower()
-        rank = request.form['rank'].lower()
-        unit = re.sub('[^0-9]', '', request.form['unit'])
-        phoneNumber = re.sub('[^0-9]', '', request.form['phoneNumber'])
+        firstName = request.form['firstName'].strip().lower()
+        lastName = request.form['lastName'].strip().lower()
+        rank = request.form['rank'].strip().lower()
+        unit = re.sub('[^0-9]', '', request.form['unit']).strip()
+        phoneNumber = re.sub('[^0-9]', '', request.form['phoneNumber']).strip()
+        fitness = request.form['fitness']
+        profile = request.form['profile']
 
 
         #following if statements check to see if the user submitted valid inputs
-        #If one of them is wrong, take them to the appropriate error page
-        if(firstName == ""):
-            return render_template('firstNameError.html')
+        #If one of them is wrong, update the index.html page with appropriate error message
+
+        if(validateName(firstName) is False):
+            if(len(firstName) == 0):
+                return render_template('index.html', error='Please Enter A First Name.')
+            return render_template('index.html', error='Invalid First Name.')
         
-        if(lastName == ""):
-            return render_template('lastNameError.html')
+        if(validateName(lastName) is False):
+            if(len(lastName) == 0):
+                return render_template('index.html', error='Please Enter A Last Name.')
+            return render_template('index.html', error='Invalid Last Name.')
+        
+        if(validateRank(rank) is False):
+            return render_template('index.html', error='Please Choose A Rank From The Dropdown Menu.')
+        
+        if(validateUnit(unit) is False):
+            if(unit == ''):
+                return render_template('index.html', error='Please Enter A Unit.')    
+            return render_template('index.html', error='Invalid Unit.')
+        
+        if(validatePhoneNumber(phoneNumber) is False):
+            if(phoneNumber == ''):
+                return render_template('index.html', error='Please Enter A Phone Number.')
+            return render_template('index.html', error='Invalid Length On The Phone Number.')
 
-        if(rank == ""):
-            return render_template('noRankError.html')
+        if(fitness == 'none'):
+            return render_template('index.html', error='Please Select Fitness Status.')
 
-        if(unit == ""):
-            return render_template('unitError.html')
-
-        if(len(phoneNumber) != 10):
-            return render_template('phoneNumberError.html', phoneNumberLength=len(phoneNumber))
+        if(profile == 'none'):
+            return render_template('index.html', error='Please Select Profile Status.')
 
         #stores value of all entries in a single variable
-        entry = f"{firstName},{lastName},{rank},{unit},{phoneNumber}"
+        entry = f"{firstName},{lastName},{rank},{unit},{phoneNumber},{fitness},{profile}"
 
         qr_code_data = generate_qr_code(entry)  # Generate QR code with values user enters
         return render_template('submitted.html', entry=entry, qr_code_data=qr_code_data)
