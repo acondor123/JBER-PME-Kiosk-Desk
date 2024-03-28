@@ -161,9 +161,9 @@
 
 
                     <div class="row">
-                        <div class="col">
+                        <div class="col-md-6">
                             <div class="input-group" role="group" id="fitness">
-                                <span class="input-group-text">Current On Fitness?&nbsp;&nbsp;</span>
+                                <span class="input-group-text">Current On Fitness?</span>
                                 <input type="radio" class="btn-check" name="fitness" id="fitnessYes" value="yes" {% if
                                     request.form.get('fitness')=='yes' %}checked{% endif %}>
                                 <label class="btn btn-radio" for="fitnessYes">Yes</label>
@@ -174,7 +174,7 @@
                                 <input type="hidden" name="fitness" value="none">
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col-md-6">
                             <div class="input-group" role="group" id="profile">
                                 <span class="input-group-text">Are You On A Profile?</span>
                                 <input type="radio" class="btn-check" name="profile" id="profileYes" value="yes" {% if
