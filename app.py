@@ -7,25 +7,50 @@ import re
 app = Flask(__name__)
 
 
-def validateName(name):
+def validateFirstName(name):
+    if(not bool(name)):
+       return 'Please Enter A First Name.'
     if(len(name) >= 64):
-        return False
-    return bool(re.match(r'^[a-zA-Z-]+$', name.strip()))
+        return 'First Name Is Too Long.'
+    if(bool(re.match(r'^[a-zA-Z-]+$', name.strip())) is False):
+        return 'Invalid First Name.'
+
+
+def validateLastName(name):
+    if(not bool(name)):
+       return 'Please Enter A Last Name.'
+    if(len(name) >= 64):
+        return 'Last Name Is Too Long.'
+    if(bool(re.match(r'^[a-zA-Z-]+$', name.strip())) is False):
+        return 'Invalid Last Name.'
+
 
 def validateRank(rank):
-    if (rank != ''):
-        return True
-    return False
+    if(not bool(rank)):
+        return 'Please Choose A Rank From The Dropdown Menu.'
+
 
 def validateUnit(unit):
-    if(len(unit) >= 2 and len(unit) <= 5):
-        return True
-    return False
+    if(not bool(unit)):
+        return 'Please Enter A Unit.'
+    if(len(unit) <= 2 or len(unit) >= 5):
+        return 'Invalid Unit.'
+
 
 def validatePhoneNumber(phoneNumber):
+    if(not bool(phoneNumber)):
+        return 'Please Enter A Phone Number.'
     if(len(phoneNumber) != 10):
-        return False
-    return True
+        return 'Invalid Length On The Phone Number.'
+
+def validateFitness(fitness):
+    if(fitness == 'none'):
+        return 'Please Choose An Answer To The Fitness Question.'
+    
+def validateProfile(profile):
+    if(profile == 'none'):
+        return 'Please Choose An Answer To The Profile Question.'
+
 
 @app.route('/')
 def index():
@@ -47,35 +72,19 @@ def submit():
 
         #following if statements check to see if the user submitted valid inputs
         #If one of them is wrong, update the index.html page with appropriate error message
+        errorMessages = []
+        errorMessages.append(validateFirstName(firstName))
+        errorMessages.append(validateLastName(lastName))
+        errorMessages.append(validateRank(rank))
+        errorMessages.append(validateUnit(unit))
+        errorMessages.append(validatePhoneNumber(phoneNumber))
+        errorMessages.append(validateFitness(fitness))
+        errorMessages.append(validateProfile(profile))
+        for message in errorMessages:
+            print(message)
+            if(bool(message)):
+                return render_template('index.html', error=message)
 
-        if(validateName(firstName) is False):
-            if(len(firstName) == 0):
-                return render_template('index.html', error='Please Enter A First Name.')
-            return render_template('index.html', error='Invalid First Name.')
-        
-        if(validateName(lastName) is False):
-            if(len(lastName) == 0):
-                return render_template('index.html', error='Please Enter A Last Name.')
-            return render_template('index.html', error='Invalid Last Name.')
-        
-        if(validateRank(rank) is False):
-            return render_template('index.html', error='Please Choose A Rank From The Dropdown Menu.')
-        
-        if(validateUnit(unit) is False):
-            if(unit == ''):
-                return render_template('index.html', error='Please Enter A Unit.')    
-            return render_template('index.html', error='Invalid Unit.')
-        
-        if(validatePhoneNumber(phoneNumber) is False):
-            if(phoneNumber == ''):
-                return render_template('index.html', error='Please Enter A Phone Number.')
-            return render_template('index.html', error='Invalid Length On The Phone Number.')
-
-        if(fitness == 'none'):
-            return render_template('index.html', error='Please Select Fitness Status.')
-
-        if(profile == 'none'):
-            return render_template('index.html', error='Please Select Profile Status.')
 
         #stores value of all entries in a single variable
         entry = f"{firstName},{lastName},{rank},{unit},{phoneNumber},{fitness},{profile}"
