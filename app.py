@@ -77,7 +77,8 @@ def submit():
         profile = request.form['profile']
 
 
-        
+        #following checks for errors when the user submits.  Only the first message
+        #is printed in order to avoid overcrowding the screen.
         errorMessages = []
         errorMessages.append(validateFirstName(firstName))
         errorMessages.append(validateLastName(lastName))
@@ -94,11 +95,11 @@ def submit():
         #stores value of all entries in a single variable
         entry = f"{firstName},{lastName},{rank},{unit},{phoneNumber},{fitness},{profile}"
 
-        qr_code_data = generate_qr_code(entry)  # Generate QR code with values user enters
+        qr_code_data = generate_qr_code(entry)
         return render_template('submitted.html', entry=entry, qr_code_data=qr_code_data)
 
 def generate_qr_code(data):
-    # Generate QR code (using qrcode library)
+
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -107,7 +108,7 @@ def generate_qr_code(data):
     )
     qr.add_data(data)
     qr.make(fit=True)
-    # Create a BytesIO object to hold the QR code image
+    # BytesIO makes it so qrcode doesn't need to be stored
     qr_img = BytesIO()
     img = qr.make_image(fill_color='black', back_color='white')
     img.save(qr_img)
