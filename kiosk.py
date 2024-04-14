@@ -58,7 +58,11 @@ class QRCodeScanner(QWidget):
         layout.addWidget(outer_container)
 
     def keyPressEvent(self, event):
-        if(event.text() != '/'):
+        if(event.key() == Qt.Key_Escape):
+            self.showNormal()
+        elif(event.key() == Qt.Key_F12):
+            self.showFullScreen()
+        elif(event.text() != '/'):
             self.scanned_code += event.text()
         else:
             print(self.scanned_code)
