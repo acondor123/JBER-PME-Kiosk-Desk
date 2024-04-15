@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QDesktopWidget
-from PyQt5.QtGui import QColor, QPixmap, QFont
+from PyQt5.QtGui import QColor, QPixmap, QFont, QMovie
 from PyQt5.QtCore import Qt
 
 class QRCodeScanner(QWidget):
@@ -8,6 +8,7 @@ class QRCodeScanner(QWidget):
         super().__init__()
 
         self.scanned_code = ""
+        self.currently_scanning = False
 
         self.setWindowTitle("QR Code Scanner")
 
@@ -15,7 +16,6 @@ class QRCodeScanner(QWidget):
 
         width = int(screen_geometry.width() * 0.8)
         height = int(screen_geometry.height() * 0.6)
-        self.setGeometry(100, 100, width, height)
 
         layout = QVBoxLayout(self)
 
@@ -37,6 +37,7 @@ class QRCodeScanner(QWidget):
 
         inner_container_layout = QVBoxLayout(inner_container)
 
+        # Set fixed width and height for the inner container
         inner_container.setFixedWidth(int(width / 1.1))
         inner_container.setFixedHeight(int(height * 1.2))
 
@@ -57,16 +58,38 @@ class QRCodeScanner(QWidget):
 
         layout.addWidget(outer_container)
 
+        # Create loading icon
+        self.loading_container = QWidget(self)
+        self.loading_container.setGeometry(0, 0, screen_geometry.width(), screen_geometry.height())
+        self.loading_container.setStyleSheet("background-color: rgba(255, 255, 255, 150);")  # Set semi-transparent white background
+        self.loading_layout = QVBoxLayout(self.loading_container)
+        self.loading_label = QLabel()
+        self.loading_layout.addWidget(self.loading_label, alignment=Qt.AlignCenter)
+        self.loading_container.hide()
+
     def keyPressEvent(self, event):
-        if(event.key() == Qt.Key_Escape):
+        if event.key() == Qt.Key_Space:
+            self.load_screen()
+        if event.key() == Qt.Key_Escape:
             self.showNormal()
-        elif(event.key() == Qt.Key_F12):
+        elif event.key() == Qt.Key_F12:
             self.showFullScreen()
-        elif(event.text() != '/'):
+        elif event.text() != '/':
             self.scanned_code += event.text()
         else:
             print(self.scanned_code)
             self.scanned_code = ""
+
+    def load_screen(self):
+        if self.loading_container.isHidden():
+            self.loading_movie = QMovie("images/loading.gif")
+            self.loading_label.setMovie(self.loading_movie)
+            self.loading_movie.start()
+            self.loading_container.show()
+            self.loading_container.raise_()
+        else:
+            self.loading_movie.stop()
+            self.loading_container.hide()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
