@@ -107,7 +107,7 @@ def submit():
 
 
         #stores value of all entries in a single variable
-        entry = f"{firstName},{lastName},{rank},{unit},{phoneNumber},{fitness},{profile}"
+        entry = f"{firstName},{lastName},{rank},{unit},{phoneNumber},{fitness},{profile}$"
 
         qr_code_data = generate_qr_code(entry)
         return render_template('submitted.html', entry=entry, qr_code_data=qr_code_data)
