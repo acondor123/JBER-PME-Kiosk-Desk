@@ -114,7 +114,7 @@ class QRCodeScanner(QWidget):
             todo: add logic to add entries to spreadsheet
             self.data_fields will have all entries stored in a dictionary for easy access
         '''
-        pass
+        print("ADD LOGIC FOR UPDATE_SPREADSHEET")
 
     def validate_input(self, qr_data):
         qr_data = qr_data.split(",")
