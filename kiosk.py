@@ -1,7 +1,9 @@
 import sys
+import time
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QDesktopWidget
 from PyQt5.QtGui import QColor, QPixmap, QFont, QMovie
 from PyQt5.QtCore import Qt
+from Resources.validate import *
 
 class QRCodeScanner(QWidget):
     def __init__(self):
@@ -9,6 +11,15 @@ class QRCodeScanner(QWidget):
 
         self.scanned_code = ""
         self.currently_scanning = False
+        self.data_fields = {
+            "first_name": False,
+            "last_name": False,
+            "rank": False,
+            "unit": False,
+            "phone_number": False,
+            "fitness": False,
+            "profile": False
+        }
 
         self.setWindowTitle("QR Code Scanner")
 
@@ -65,6 +76,17 @@ class QRCodeScanner(QWidget):
         self.loading_layout.addWidget(self.loading_label, alignment=Qt.AlignCenter)
         self.loading_container.hide()
 
+    def reset_data(self):
+        self.data_fields = {
+            "first_name": False,
+            "last_name": False,
+            "rank": False,
+            "unit": False,
+            "phone_number": False,
+            "fitness": False,
+            "profile": False
+        }
+
     def keyPressEvent(self, event):
 
         if event.key() == Qt.Key_Escape:
@@ -78,13 +100,51 @@ class QRCodeScanner(QWidget):
                 self.currently_scanning = True
         else:
             print(self.scanned_code)
-            self.validate_input()
+            is_valid = self.validate_input(self.scanned_code)
+            if(is_valid):
+                self.update_spreadsheet()
             self.scanned_code = ""
             self.currently_scanning = False
+            time.sleep(0.5)
             self.load_screen()
 
-    def validate_input(self):
+
+    def update_spreadsheet(self):
+        '''
+            todo: add logic to add entries to spreadsheet
+            self.data_fields will have all entries stored in a dictionary for easy access
+        '''
         pass
+
+    def validate_input(self, qr_data):
+        qr_data = qr_data.split(",")
+        if(len(qr_data) > 7):
+            print("Too much data")
+            return False
+        elif(len(qr_data) < 7):
+            print("Not enough data")
+            return False
+        if(validateFirstName(qr_data[0])):
+            self.data_fields["first_name"] = qr_data[0]
+        if(validateLastName(qr_data[1])):
+            self.data_fields["last_name"] = qr_data[1]
+        if(validateRank(qr_data[2])):
+            self.data_fields["rank"] = qr_data[2]
+        if(validateUnit(qr_data[3])):
+            self.data_fields["unit"] = qr_data[3]
+        if(validatePhoneNumber(qr_data[4])):
+            self.data_fields["phone_number"] = qr_data[4]
+        if(validateFitness(qr_data[5])):
+            self.data_fields["fitness"] = qr_data[5]
+        if(validateProfile(qr_data[6])):
+            self.data_fields["profile"] = qr_data[6]
+
+        for key, value in self.data_fields.items():
+            if(value is False):
+                print(f"No value found for {key}")
+                return False
+            
+        return True
 
     def load_screen(self):
         if self.loading_container.isHidden():
