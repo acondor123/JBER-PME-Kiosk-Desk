@@ -37,7 +37,6 @@ class QRCodeScanner(QWidget):
 
         inner_container_layout = QVBoxLayout(inner_container)
 
-        # Set fixed width and height for the inner container
         inner_container.setFixedWidth(int(width / 1.1))
         inner_container.setFixedHeight(int(height * 1.2))
 
@@ -58,27 +57,34 @@ class QRCodeScanner(QWidget):
 
         layout.addWidget(outer_container)
 
-        # Create loading icon
         self.loading_container = QWidget(self)
         self.loading_container.setGeometry(0, 0, screen_geometry.width(), screen_geometry.height())
-        self.loading_container.setStyleSheet("background-color: rgba(255, 255, 255, 150);")  # Set semi-transparent white background
+        self.loading_container.setStyleSheet("background-color: rgba(255, 255, 255, 150);")
         self.loading_layout = QVBoxLayout(self.loading_container)
         self.loading_label = QLabel()
         self.loading_layout.addWidget(self.loading_label, alignment=Qt.AlignCenter)
         self.loading_container.hide()
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Space:
-            self.load_screen()
+
         if event.key() == Qt.Key_Escape:
             self.showNormal()
         elif event.key() == Qt.Key_F12:
             self.showFullScreen()
-        elif event.text() != '/':
+        elif event.text() != '$':
             self.scanned_code += event.text()
+            if not self.currently_scanning:
+                self.load_screen()
+                self.currently_scanning = True
         else:
             print(self.scanned_code)
+            self.validate_input()
             self.scanned_code = ""
+            self.currently_scanning = False
+            self.load_screen()
+
+    def validate_input(self):
+        pass
 
     def load_screen(self):
         if self.loading_container.isHidden():
