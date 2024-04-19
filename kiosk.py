@@ -1,8 +1,8 @@
 import sys
 import time
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QDesktopWidget
-from PyQt5.QtGui import QColor, QPixmap, QFont, QMovie
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QMouseEvent, QPixmap, QFont, QMovie
+from PyQt5.QtCore import Qt, QTimer
 from Resources.validate import *
 
 class QRCodeScanner(QWidget):
@@ -20,6 +20,9 @@ class QRCodeScanner(QWidget):
             "fitness": False,
             "profile": False
         }
+
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.reset_scanned_code)
 
         self.setWindowTitle("QR Code Scanner")
 
@@ -87,27 +90,41 @@ class QRCodeScanner(QWidget):
             "profile": False
         }
 
+    def mouseDoubleClickEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            if self.isFullScreen():
+                self.showNormal()
+            else:
+                self.showFullScreen()
+
     def keyPressEvent(self, event):
 
-        if event.key() == Qt.Key_Escape:
-            self.showNormal()
-        elif event.key() == Qt.Key_F12:
-            self.showFullScreen()
-        elif event.text() != '$':
+        if event.text() != '$' and event.text() != "":
             self.scanned_code += event.text()
             if not self.currently_scanning:
                 self.load_screen()
                 self.currently_scanning = True
-        else:
+            self.timer.start(5000)
+        elif self.scanned_code != "" and event.text() == "$":
             print(self.scanned_code)
             is_valid = self.validate_input(self.scanned_code)
             if(is_valid):
                 self.update_spreadsheet()
+                self.load_screen()
+                self.show_checkmark_overlay()
+            else:
+                self.load_screen()
             self.scanned_code = ""
             self.currently_scanning = False
             time.sleep(0.5)
-            self.load_screen()
+            self.timer.stop()
 
+    def reset_scanned_code(self):
+        self.scanned_code = ""
+        self.load_screen()
+        self.currently_scanning = False
+        self.timer.stop()
+        print("Timed out due to no terminal symbol.")
 
     def update_spreadsheet(self):
         '''
@@ -161,6 +178,43 @@ class QRCodeScanner(QWidget):
         else:
             self.loading_movie.stop()
             self.loading_container.hide()
+
+    def show_checkmark_overlay(self):
+        # Create a QLabel to display the GIF
+        gif_label = QLabel(self)
+        movie = QMovie("images/checkmark.gif")
+
+        # Set the movie to play once and start it
+        movie.loopCount = 1  # Set loop count to 1
+        gif_label.setMovie(movie)
+        movie.start()
+
+        # Set the geometry of the QLabel to center it on the screen and scale it down
+        screen_geometry = QApplication.desktop().screenGeometry()
+        scale_factor = 0.5  # Adjust the scale factor as needed
+        gif_width = int(movie.frameRect().width() * scale_factor)
+        gif_height = int(movie.frameRect().height() * scale_factor)
+        gif_label.setGeometry(
+            (screen_geometry.width() - gif_width) // 2,
+            (screen_geometry.height() - gif_height) // 2,
+            gif_width,
+            gif_height
+        )
+
+        # Set aspect ratio policy to keep the GIF aspect ratio when scaled
+        gif_label.setScaledContents(True)
+
+        # Connect a function to check if the movie has finished playing
+        def check_movie_finished(frame_number):
+            if frame_number == movie.frameCount() - 1:
+                movie.stop()
+                gif_label.close()
+
+        # Connect the function to the frameChanged signal
+        movie.frameChanged.connect(check_movie_finished)
+
+        # Display the QLabel
+        gif_label.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
