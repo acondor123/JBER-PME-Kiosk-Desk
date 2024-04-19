@@ -1,6 +1,6 @@
 import sys
 import time
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QDesktopWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QDesktopWidget, QMessageBox
 from PyQt5.QtGui import QColor, QMouseEvent, QPixmap, QFont, QMovie
 from PyQt5.QtCore import Qt, QTimer
 from Resources.validate import *
@@ -22,7 +22,7 @@ class QRCodeScanner(QWidget):
         }
 
         self.timer = QTimer()
-        self.timer.timeout.connect(self.reset_scanned_code)
+        self.timer.timeout.connect(self.timer_expired)
 
         self.setWindowTitle("QR Code Scanner")
 
@@ -97,34 +97,48 @@ class QRCodeScanner(QWidget):
             else:
                 self.showFullScreen()
 
+    '''
+        Below funciton deals with the logic for when a qrcode is scanned.
+        Since barcode scanners are treated as keyboard input, we have
+        decided to use keypressevents to determine what has been entered
+    '''
     def keyPressEvent(self, event):
-
+        #for each button press, add each letter to the scanned_code variable
         if event.text() != '$' and event.text() != "":
             self.scanned_code += event.text()
             if not self.currently_scanning:
                 self.load_screen()
                 self.currently_scanning = True
-            self.timer.start(5000)
+                #set timer to make sure the machine resets if an invalid qrcode is scanned that doesn't
+                #have the terminal signal in it; if timer expires, calls reset_scanned_code()
+                self.timer.start(5000)
+        
+        #now that the terminal symbol is reached, we need to validate the input and reset the machine's state for the next scan
         elif self.scanned_code != "" and event.text() == "$":
             print(self.scanned_code)
             is_valid = self.validate_input(self.scanned_code)
             if(is_valid):
                 self.update_spreadsheet()
-                self.load_screen()
-                self.show_checkmark_overlay()
+                self.reset_scanned_code()
+                self.show_checkmark_overlay()            
             else:
-                self.load_screen()
-            self.scanned_code = ""
-            self.currently_scanning = False
+                self.reset_scanned_code()
+                self.show_invalid_qr_message()
             time.sleep(0.5)
-            self.timer.stop()
 
+
+    '''
+        Below function sets the machine's state to its initial state to ensure no bugs are introduced.
+    '''
     def reset_scanned_code(self):
         self.scanned_code = ""
         self.load_screen()
         self.currently_scanning = False
         self.timer.stop()
-        print("Timed out due to no terminal symbol.")
+
+    def timer_expired(self):
+        self.reset_scanned_code()
+        self.show_invalid_qr_message()
 
     def update_spreadsheet(self):
         '''
@@ -136,6 +150,10 @@ class QRCodeScanner(QWidget):
         #required in order to clear all fields previously in use
         self.reset_data()
 
+    '''
+        Below function validates the user's input to ensure it is in the same format as given to them in the website.
+        This ensures nothing malicious is scanned, as it will reject anything that isn't expected.
+    '''
     def validate_input(self, qr_data):
         valid_length = 7
         qr_data = qr_data.split(",")
@@ -146,6 +164,8 @@ class QRCodeScanner(QWidget):
         elif(len(qr_data) < valid_length):
             print("Not enough data")
             return False
+        #below if statements make sure all data is validated based on the format given in the website
+        #this ensures no malicious qr codes are scanned
         if(validateFirstName(qr_data[0])):
             self.data_fields["first_name"] = qr_data[0]
         if(validateLastName(qr_data[1])):
@@ -161,13 +181,19 @@ class QRCodeScanner(QWidget):
         if(validateProfile(qr_data[6])):
             self.data_fields["profile"] = qr_data[6]
 
+
+        #if there is a value not found in the data_fields dict, return false
         for key, value in self.data_fields.items():
             if(value is False):
                 print(f"No value found for {key}")
                 return False
             
         return True
+    
 
+    '''
+        Starts loading screen to indicate the machine is working
+    '''
     def load_screen(self):
         if self.loading_container.isHidden():
             self.loading_movie = QMovie("images/loading.gif")
@@ -179,19 +205,19 @@ class QRCodeScanner(QWidget):
             self.loading_movie.stop()
             self.loading_container.hide()
 
+    '''
+        Shows checkmark animation to indicate a successful scan.
+    '''
     def show_checkmark_overlay(self):
-        # Create a QLabel to display the GIF
         gif_label = QLabel(self)
         movie = QMovie("images/checkmark.gif")
 
-        # Set the movie to play once and start it
-        movie.loopCount = 1  # Set loop count to 1
+        movie.loopCount = 1
         gif_label.setMovie(movie)
         movie.start()
 
-        # Set the geometry of the QLabel to center it on the screen and scale it down
         screen_geometry = QApplication.desktop().screenGeometry()
-        scale_factor = 0.5  # Adjust the scale factor as needed
+        scale_factor = 0.5
         gif_width = int(movie.frameRect().width() * scale_factor)
         gif_height = int(movie.frameRect().height() * scale_factor)
         gif_label.setGeometry(
@@ -213,9 +239,24 @@ class QRCodeScanner(QWidget):
         # Connect the function to the frameChanged signal
         movie.frameChanged.connect(check_movie_finished)
 
-        # Display the QLabel
         gif_label.show()
 
+    def show_invalid_qr_message(self, duration=3000):  
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setText("Invalid QR Code.")
+        msg.setInformativeText("Please scan again.")
+        msg.setWindowTitle("Error")
+        
+        msg.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowTitleHint)
+        
+        timer = QTimer()
+        timer.setSingleShot(True)
+        timer.timeout.connect(msg.close)
+        timer.start(duration)
+        
+        msg.exec_()
+        
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = QRCodeScanner()
