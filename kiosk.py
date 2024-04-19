@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QDesktop
 from PyQt5.QtGui import QColor, QMouseEvent, QPixmap, QFont, QMovie
 from PyQt5.QtCore import Qt, QTimer
 from Resources.validate import *
+from openpyxl import Workbook
+from openpyxl import load_workbook
 
 class QRCodeScanner(QWidget):
     def __init__(self):
@@ -140,6 +142,33 @@ class QRCodeScanner(QWidget):
         self.reset_scanned_code()
         self.show_invalid_qr_message()
 
+    # def write_to_excel(decodeQR):
+    #     try:
+    #         try:
+    #             workbook = load_workbook('entries.xlsx')
+    #         except FileNotFoundError:
+    #             workbook = Workbook()
+    #             workbook.save('entries.xlsx')
+
+    #         worksheet = workbook.active
+
+    #         # Find the next available row
+    #         next_row = worksheet.max_row + 1
+
+    #         # Split the string and write it to the columns
+    #         qr_data = decodeQR.split(',')
+    #         for i, data in enumerate(qr_data):
+    #             worksheet.cell(row=next_row, column=i + 1).value = data
+    #         next_row += 1
+
+    #         # Save workbook
+    #         workbook.save('entries.xlsx')
+
+    #         return True
+    #     except Exception as error:
+    #         print(f"Error writing QR code data to spreadsheet: {error}")
+    #         return False
+        
     def update_spreadsheet(self):
         '''
             todo: add logic to add entries to spreadsheet
