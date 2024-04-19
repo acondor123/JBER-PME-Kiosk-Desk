@@ -116,12 +116,17 @@ class QRCodeScanner(QWidget):
         '''
         print("ADD LOGIC FOR UPDATE_SPREADSHEET")
 
+        #required in order to clear all fields previously in use
+        self.reset_data()
+
     def validate_input(self, qr_data):
+        valid_length = 7
         qr_data = qr_data.split(",")
-        if(len(qr_data) > 7):
+
+        if(len(qr_data) > valid_length):
             print("Too much data")
             return False
-        elif(len(qr_data) < 7):
+        elif(len(qr_data) < valid_length):
             print("Not enough data")
             return False
         if(validateFirstName(qr_data[0])):
