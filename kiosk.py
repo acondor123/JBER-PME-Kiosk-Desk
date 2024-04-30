@@ -167,7 +167,6 @@ class QRCodeScanner(QWidget):
         except Exception as error:
             print(f"Error writing QR code data to spreadsheet: {error}")
 
-        print("ADD LOGIC FOR UPDATE_SPREADSHEET")
 
     '''
         Below function validates the user's input to ensure it is in the same format as given to them in the website.
