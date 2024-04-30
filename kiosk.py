@@ -142,42 +142,32 @@ class QRCodeScanner(QWidget):
         self.reset_scanned_code()
         self.show_invalid_qr_message()
 
-    # def write_to_excel(decodeQR):
-    #     try:
-    #         try:
-    #             workbook = load_workbook('entries.xlsx')
-    #         except FileNotFoundError:
-    #             workbook = Workbook()
-    #             workbook.save('entries.xlsx')
-
-    #         worksheet = workbook.active
-
-    #         # Find the next available row
-    #         next_row = worksheet.max_row + 1
-
-    #         # Split the string and write it to the columns
-    #         qr_data = decodeQR.split(',')
-    #         for i, data in enumerate(qr_data):
-    #             worksheet.cell(row=next_row, column=i + 1).value = data
-    #         next_row += 1
-
-    #         # Save workbook
-    #         workbook.save('entries.xlsx')
-
-    #         return True
-    #     except Exception as error:
-    #         print(f"Error writing QR code data to spreadsheet: {error}")
-    #         return False
-        
     def update_spreadsheet(self):
-        '''
-            todo: add logic to add entries to spreadsheet
-            self.data_fields will have all entries stored in a dictionary for easy access
-        '''
-        print("ADD LOGIC FOR UPDATE_SPREADSHEET")
+        try:
+            try:
+                workbook = load_workbook('entries.xlsx')
+            except FileNotFoundError:
+                workbook = Workbook()
+                workbook.save('entries.xlsx')
 
-        #required in order to clear all fields previously in use
-        self.reset_data()
+            worksheet = workbook.active
+
+            next_row = worksheet.max_row + 1
+
+            qr_data = self.scanned_code.split(',')
+            for i, data in enumerate(qr_data):
+                worksheet.cell(row=next_row, column=i + 1).value = data
+            next_row += 1
+
+            workbook.save('entries.xlsx')
+
+            self.reset_data()
+
+            print("QR code data written to spreadsheet successfully")
+        except Exception as error:
+            print(f"Error writing QR code data to spreadsheet: {error}")
+
+        print("ADD LOGIC FOR UPDATE_SPREADSHEET")
 
     '''
         Below function validates the user's input to ensure it is in the same format as given to them in the website.
