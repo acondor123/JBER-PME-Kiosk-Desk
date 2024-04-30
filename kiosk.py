@@ -206,7 +206,7 @@ class QRCodeScanner(QWidget):
             if(value is False):
                 print(f"No value found for {key}")
                 return False
-            
+        print(self.data_fields)
         return True
     
 
