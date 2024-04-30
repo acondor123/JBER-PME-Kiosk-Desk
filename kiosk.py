@@ -81,16 +81,6 @@ class QRCodeScanner(QWidget):
         self.loading_layout.addWidget(self.loading_label, alignment=Qt.AlignCenter)
         self.loading_container.hide()
 
-    def reset_data(self):
-        self.data_fields = {
-            "first_name": False,
-            "last_name": False,
-            "rank": False,
-            "unit": False,
-            "phone_number": False,
-            "fitness": False,
-            "profile": False
-        }
 
     def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -137,6 +127,15 @@ class QRCodeScanner(QWidget):
         self.load_screen()
         self.currently_scanning = False
         self.timer.stop()
+        self.data_fields = {
+            "first_name": False,
+            "last_name": False,
+            "rank": False,
+            "unit": False,
+            "phone_number": False,
+            "fitness": False,
+            "profile": False
+        }
 
     def timer_expired(self):
         self.reset_scanned_code()
@@ -160,8 +159,6 @@ class QRCodeScanner(QWidget):
             next_row += 1
 
             workbook.save('entries.xlsx')
-
-            self.reset_data()
 
             print("QR code data written to spreadsheet successfully")
         except Exception as error:
