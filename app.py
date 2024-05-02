@@ -42,8 +42,11 @@ def validateLastName(name):
 
 
 def validateRank(rank):
+    validRanks = ["amn", "a1c", "sra", "ssgt", "tsgt", "msgt", "smsgt", "cmsgt"]
     if(not bool(rank)):
         return 'Please Choose A Rank From The Dropdown Menu.'
+    elif(rank not in validRanks):
+        return 'Please Enter A Valid Rank From The Dropdown Menu.'
     else:
         return False
 
