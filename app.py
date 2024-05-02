@@ -12,8 +12,13 @@ minUnitLength = 2
 maxUnitLength = 5
 nameRegex = r'^[a-zA-ZÀ-ÖØ-öø-ÿ-]+$'
 
+'''
+    All validate functions below ensure that the proper information is
+    being submitted by the user.  If a problem is encountered, a string
+    detailing the error is returned to the submit function.  This error
+    is then displayed for the user on the index.html page.
+'''
 def validateFirstName(name):
-
 
     if(not bool(name)):
        return 'Please Enter A First Name.'
@@ -72,11 +77,19 @@ def validateProfile(profile):
     else:
         return False
 
-
+'''
+    Below function renders the home screen when website is first opened.
+'''
 @app.route('/')
 def index():
     return render_template('index.html')
 
+'''
+    Below function handles the logic taken when form is submitted.
+    It validates the input against desired format and then formats
+    the data appropriately.  It then calls generate_qr_code to
+    make the QR code the student will keep with them.
+'''
 @app.route('/submit', methods=['POST'])
 def submit():
     if request.method == 'POST':
@@ -112,6 +125,13 @@ def submit():
         qr_code_data = generate_qr_code(entry)
         return render_template('submitted.html', entry=entry, qr_code_data=qr_code_data)
 
+
+'''
+    Uses the library qrcode to generate QR codes form the information
+    gathered from the form the student fills out on the home page.
+    This function returns a BytesIO object that is then displayed
+    as specified by the HTML in submitted.html.
+'''
 def generate_qr_code(data):
 
     qr = qrcode.QRCode(
