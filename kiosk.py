@@ -1,7 +1,7 @@
 import sys
 import time
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QDesktopWidget, QMessageBox
-from PyQt5.QtGui import QColor, QMouseEvent, QPixmap, QFont, QMovie
+from PyQt5.QtGui import QColor, QPixmap, QMovie
 from PyQt5.QtCore import Qt, QTimer
 from Resources.validate import *
 from openpyxl import Workbook
