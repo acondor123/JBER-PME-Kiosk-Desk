@@ -12,6 +12,18 @@ import re
     The logo displayed on the screen is contained in the folder 'static' and it must remain in there.
     The HTML files are located in the folder 'templates' and are required to display the website.
     There should be two files in there: index.html AND submitted.html.
+
+    For app.py
+        Connor wrote    xx%
+        Mika wrote      xx%
+
+    For index.html
+        Connor wrote    xx%
+        Mika wrote      xx%
+
+    For sumbitted.html
+        Connor wrote    xx%
+        Mika wrote      xx%
 '''
 
 app = Flask(__name__)

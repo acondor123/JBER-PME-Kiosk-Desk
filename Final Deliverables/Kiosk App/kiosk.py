@@ -12,6 +12,14 @@ import datetime
     This file contains the source code for the Kiosk app.
     All required installations are shown in requirements.txt.
     The validate.py import is located in the resources folder.
+
+    For kiosk.py
+        Connor wrote    xx%
+        Mika wrote      xx%
+
+    For validate.py
+        Connor wrote    xx%
+        Mika wrote      xx%
 '''
 
 class QRCodeScanner(QWidget):
