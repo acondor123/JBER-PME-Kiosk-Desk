@@ -1,0 +1,33 @@
+In order to operate this app, you simply need to open kiosk.py.
+
+Once open, you can double tap/click anywhere on the user interface and it will go full screen.
+
+At this point, the QR codes are ready to scan.
+
+Simply scan the QR code at the sensor located at the front of the machine and let the kiosk do the processing.
+
+When the screen displays a loading icon, it means it's processing the scan.   No additional action should be taken at this time.
+
+If the screen displays a warning, then the scan has failed and it will not update to the spreadsheet.
+
+If the scan was successful, the screen will display a green checkmark indicating a good scan.
+
+Once a good scan is completed, a spreadsheet located in the "Spreadsheets" folder will either populate or update with the relevant information.
+
+The spreadsheets are automatically named in the following format:
+	dd-Month-yyyy.xlsx
+	02-May-2024.xlsx
+	
+Each row is added in the order the students scan the QR codes and cannot be reversed unless the spreadsheets themselves are updated.
+
+If any problems are encountered ensure the following folders with the appropriate files are located in the same file path as kiosk.py:
+	images
+	resources
+	spreadsheets
+	
+In the images folder, there should be files called checkmark.gif, loading.gif, and pmelogo.png.
+
+In the resources folder there should be a file called validate.py.
+
+In order to generate QR codes for scanning, navigate to the following URL:
+	https://jberpme-96ea7d14ff9b.herokuapp.com/

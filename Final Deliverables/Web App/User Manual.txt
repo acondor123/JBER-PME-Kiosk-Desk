@@ -1,0 +1,25 @@
+To access the website specified by the files contained in this folder, navigate to the following URL:
+	https://jberpme-96ea7d14ff9b.herokuapp.com/
+	
+This link will lead you to an EForm the students should fill out in the lobby or before the first day of class.
+
+The form will prompt the student for the following information:
+	First Name
+	Last Name
+	Rank
+	Unit
+	Phone Number
+	Current on fitness?		yes/no
+	Are you on a profile?	yes/no
+	
+Once the submit button is pressed, a QR code containing this information is generated.
+
+This QR code isn't stored anywhere on the web.
+
+The student should then save the QR code for the day of their check-in.
+
+The save button automatically downloads a PNG file contiaining their QR code.
+
+The form is simple enough to fill out that it could be done in the lobby.
+
+On check-in day, the student should scan their QR code at the barcode scanner on the front of the kiosk with the kiosk app running.
