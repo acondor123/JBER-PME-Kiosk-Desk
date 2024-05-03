@@ -1,12 +1,11 @@
 import sys
 import time
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QDesktopWidget, QMessageBox
-from PyQt5.QtGui import QColor, QPixmap, QMovie
+from PyQt5.QtGui import QColor, QMouseEvent, QPixmap, QFont, QMovie
 from PyQt5.QtCore import Qt, QTimer
 from Resources.validate import *
 from openpyxl import Workbook
 from openpyxl import load_workbook
-import datetime
 
 class QRCodeScanner(QWidget):
     def __init__(self):
@@ -82,10 +81,16 @@ class QRCodeScanner(QWidget):
         self.loading_layout.addWidget(self.loading_label, alignment=Qt.AlignCenter)
         self.loading_container.hide()
 
-
-    '''
-        Below function sets GUI to fullscreen when double tapped/clicked.
-    '''
+    def reset_data(self):
+        self.data_fields = {
+            "first_name": False,
+            "last_name": False,
+            "rank": False,
+            "unit": False,
+            "phone_number": False,
+            "fitness": False,
+            "profile": False
+        }
 
     def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -132,40 +137,18 @@ class QRCodeScanner(QWidget):
         self.load_screen()
         self.currently_scanning = False
         self.timer.stop()
-        self.data_fields = {
-            "first_name": False,
-            "last_name": False,
-            "rank": False,
-            "unit": False,
-            "phone_number": False,
-            "fitness": False,
-            "profile": False
-        }
-
-
-    '''
-        Below function specifies what happens when a scan of a QR code takes too long.
-        This indicates that an invalid QR code is scanned.
-    '''
 
     def timer_expired(self):
         self.reset_scanned_code()
         self.show_invalid_qr_message()
 
-    '''
-        Below funciton creates a new spreadsheet with the information scanned.  If the
-        workbook already exists, it simply adds on to it.
-    '''
-
     def update_spreadsheet(self):
-        current_date = datetime.date.today()
-        formatted_date = current_date.strftime("%d-%b-%Y")
         try:
             try:
-                workbook = load_workbook(f'spreadsheets/{formatted_date}.xlsx')
+                workbook = load_workbook('entries.xlsx')
             except FileNotFoundError:
                 workbook = Workbook()
-                workbook.save(f'spreadsheets/{formatted_date}.xlsx')
+                workbook.save('entries.xlsx')
 
             worksheet = workbook.active
 
@@ -176,12 +159,15 @@ class QRCodeScanner(QWidget):
                 worksheet.cell(row=next_row, column=i + 1).value = data
             next_row += 1
 
-            workbook.save(f'spreadsheets/{formatted_date}.xlsx')
+            workbook.save('entries.xlsx')
+
+            self.reset_data()
 
             print("QR code data written to spreadsheet successfully")
         except Exception as error:
             print(f"Error writing QR code data to spreadsheet: {error}")
 
+        print("ADD LOGIC FOR UPDATE_SPREADSHEET")
 
     '''
         Below function validates the user's input to ensure it is in the same format as given to them in the website.
@@ -220,6 +206,7 @@ class QRCodeScanner(QWidget):
             if(value is False):
                 print(f"No value found for {key}")
                 return False
+            
         return True
     
 
@@ -272,10 +259,6 @@ class QRCodeScanner(QWidget):
         movie.frameChanged.connect(check_movie_finished)
 
         gif_label.show()
-
-    '''
-        Below function shows the error messages when a problem is encountered.
-    '''
 
     def show_invalid_qr_message(self, duration=3000):  
         msg = QMessageBox()

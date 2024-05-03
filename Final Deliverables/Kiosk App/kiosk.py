@@ -14,12 +14,12 @@ import datetime
     The validate.py import is located in the resources folder.
 
     For kiosk.py
-        Connor wrote    xx%
-        Mika wrote      xx%
+        Connor wrote    70%
+        Mika wrote      30%
 
     For validate.py
-        Connor wrote    xx%
-        Mika wrote      xx%
+        Connor wrote    100%
+        Mika wrote      0%
 '''
 
 class QRCodeScanner(QWidget):
@@ -96,7 +96,6 @@ class QRCodeScanner(QWidget):
         self.loading_layout.addWidget(self.loading_label, alignment=Qt.AlignCenter)
         self.loading_container.hide()
 
-
     '''
         Below function sets GUI to fullscreen when double tapped/clicked.
     '''
@@ -137,7 +136,6 @@ class QRCodeScanner(QWidget):
                 self.show_invalid_qr_message()
             time.sleep(0.5)
 
-
     '''
         Below function sets the machine's state to its initial state to ensure no bugs are introduced.
     '''
@@ -155,7 +153,6 @@ class QRCodeScanner(QWidget):
             "fitness": False,
             "profile": False
         }
-
 
     '''
         Below function specifies what happens when a scan of a QR code takes too long.
@@ -196,7 +193,6 @@ class QRCodeScanner(QWidget):
         except Exception as error:
             print(f"Error writing QR code data to spreadsheet: {error}")
 
-
     '''
         Below function validates the user's input to ensure it is in the same format as given to them in the website.
         This ensures nothing malicious is scanned, as it will reject anything that isn't expected.
@@ -228,7 +224,6 @@ class QRCodeScanner(QWidget):
         if(validateProfile(qr_data[6])):
             self.data_fields["profile"] = qr_data[6]
 
-
         #if there is a value not found in the data_fields dict, return false
         for key, value in self.data_fields.items():
             if(value is False):
@@ -236,7 +231,6 @@ class QRCodeScanner(QWidget):
                 return False
         return True
     
-
     '''
         Starts loading screen to indicate the machine is working
     '''

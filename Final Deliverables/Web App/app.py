@@ -14,16 +14,16 @@ import re
     There should be two files in there: index.html AND submitted.html.
 
     For app.py
-        Connor wrote    xx%
-        Mika wrote      xx%
+        Connor wrote    80%
+        Mika wrote      20%
 
     For index.html
-        Connor wrote    xx%
-        Mika wrote      xx%
+        Connor wrote    100%
+        Mika wrote      0%
 
-    For sumbitted.html
-        Connor wrote    xx%
-        Mika wrote      xx%
+    For submitted.html
+        Connor wrote    100%
+        Mika wrote      0%
 '''
 
 app = Flask(__name__)
